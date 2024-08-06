@@ -1,0 +1,28 @@
+{
+  "name": "bloggio-api",
+  "version": "1.0.0",
+  "description": "RestfulAPI for bloggio ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omrfrkcpr/bloggio-api.git"
+  },
+  "author": "omerrfarukcapur@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/omrfrkcpr/bloggio-api/issues"
+  },
+  "homepage": "https://github.com/omrfrkcpr/bloggio-api#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.2",
+    "nodemon": "^3.1.4"
+  }
+}
