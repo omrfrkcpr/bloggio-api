@@ -39,4 +39,7 @@ app.use((req, res, next) => {
   });
 });
 
+// errorHandler:
+app.use(require("./src/middlewares/errorHandler"));
+
 app.listen(PORT, () => console.log(`server runned on http://${HOST}:${PORT}`));
