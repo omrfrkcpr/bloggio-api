@@ -3,6 +3,7 @@
 const router = require("express").Router();
 const user = require("../controllers/user");
 const { upload, uploadToS3 } = require("../middlewares/awsS3Upload");
+const { isLogin, isUserOwnerOrAdmin } = require("../middlewares/permissions");
 const { emailLimiter } = require("../middlewares/rateLimiters");
 
 // URL: /users
@@ -16,6 +17,7 @@ router.post("/feedback", emailLimiter, handleFeedback);
 
 router
   .route("/:id")
+  .all(isLogin, isUserOwnerOrAdmin)
   .get(user.read)
   .put(upload.single("avatar"), uploadToS3, user.update)
   .patch(upload.single("avatar"), uploadToS3, user.update)
