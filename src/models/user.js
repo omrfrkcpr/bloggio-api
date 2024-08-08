@@ -61,6 +61,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    saved: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Blog",
+      },
+    ],
     isActive: {
       type: Boolean,
       default: true,
