@@ -8,19 +8,18 @@ const { emailLimiter } = require("../middlewares/rateLimiters");
 
 // URL: /users
 
-router
-  .route("/")
-  .get(user.list)
-  .post(upload.single("avatar"), uploadToS3, user.create);
+const { list, create, handleFeedback, update, read } = user; // destructure
+
+router.route("/").get(list).post(upload.single("avatar"), uploadToS3, create);
 
 router.post("/feedback", emailLimiter, handleFeedback);
 
 router
   .route("/:id")
   .all(isLogin, isUserOwnerOrAdmin)
-  .get(user.read)
-  .put(upload.single("avatar"), uploadToS3, user.update)
-  .patch(upload.single("avatar"), uploadToS3, user.update)
+  .get(read)
+  .put(upload.single("avatar"), uploadToS3, update)
+  .patch(upload.single("avatar"), uploadToS3, update)
   .delete(user.delete);
 
 module.exports = router;

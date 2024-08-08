@@ -27,6 +27,7 @@ module.exports = {
     res.status(201).send({
       error: false,
       data,
+      message: "Token successfully created",
     });
   },
 
@@ -48,14 +49,21 @@ module.exports = {
             #swagger.ignore = true
         */
 
-    const data = await Token.updateOne({ _id: req.params.id }, req.body, {
-      runValidators: true,
-    });
+    const data = await Token.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      {
+        runValidators: true,
+        new: true,
+      }
+    );
 
     res.status(202).send({
-      error: false,
-      data,
-      new: await Token.findOne({ _id: req.params.id }),
+      error: !data.modifiedCount,
+      new: data,
+      message: data.modifiedCount
+        ? "Token successfully updated"
+        : "Token not found",
     });
   },
 
@@ -68,6 +76,9 @@ module.exports = {
 
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
+      message: data.deletedCount
+        ? "Token successfully deleted"
+        : "Token not found",
       data,
     });
   },

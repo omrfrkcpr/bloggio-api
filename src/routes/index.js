@@ -2,7 +2,7 @@
 
 const router = require("express").Router();
 
-// URL: /
+// URL: /api/${VERSION}
 
 router.use("/auth", require("./auth"));
 // router.use("/blogs", require("./blog"));

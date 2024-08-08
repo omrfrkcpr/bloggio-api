@@ -6,16 +6,16 @@ const { isLogin, isBlogOwnerOrAdmin } = require("../middlewares/permissions");
 
 // URL: /blogs
 
-router.route("/").get(blog.list).post(isLogin, blog.create);
+const { list, create, like, read, update } = blog; // destructure
 
-router.route("/:id/like").put(isLogin, blog.like);
-
+router.route("/").get(list).post(isLogin, create);
+router.route("/:id/like").put(isLogin, like);
 router
   .route("/:id")
   .all(isBlogOwnerOrAdmin)
-  .get(blog.read)
-  .put(blog.update)
-  .patch(blog.update)
+  .get(read)
+  .put(update)
+  .patch(update)
   .delete(blog.delete);
 
 module.exports = router;
