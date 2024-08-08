@@ -14,4 +14,5 @@ module.exports = {
   REFRESH_KEY: process.env?.REFRESH_KEY,
   REFRESH_EXP: process.env?.REFRESH_EXP || "2d",
   VERSION: process.env?.VERSION,
+  NODE_ENV: process.env.NODE_ENV == "production" ? true : false, //! in development false - // Set secure to true if using HTTPS / after deployment
 };

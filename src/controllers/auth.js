@@ -42,19 +42,7 @@ module.exports = {
              }
       }
     */
-    /*
-      - Retrieves firstName, lastName, email, and password from the incoming request.body.
-      - Checks if the user with the given email already exists in the database.
-      - If the user exists, returns a 400 error with a message indicating that the email already exists.
-      - If the user does not exist, creates a new user with the provided details.
-        - Password is hashed using bcrypt before saving.
-      - Saves the new user to the database.
-      - Generates a verification token and saves it to TokenVerificationModel.
-      - Sends a welcome email to the user.
-      - Returns a success message with the newly created user data.
-    */
-
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, username } = req.body;
 
     const isStrong = validator.isStrongPassword(password, {
       minLength: 6,
@@ -74,12 +62,6 @@ module.exports = {
       throw new CustomError("Email already exists!", 400);
     }
 
-    // local upload
-    // let formattedAvatar = "";
-    // if (req.file) {
-    //   formattedAvatar = "/uploads/" + req.file.filename;
-    // }
-
     let imagePath = "";
     if (req.fileLocation) {
       imagePath = req.fileLocation;
@@ -94,20 +76,16 @@ module.exports = {
       isActive: false, // user will active his account via verification email
       isAdmin: false,
       avatar: imagePath,
+      username,
     });
 
     // Save new user to the database
     const newUser = await user.save();
 
-    // // Get tokens for new user
-    // const { tokenData, accessToken, refreshToken } = await generateAllTokens(
-    //   newUser
-    // );
-
     // Create new Token in TokenVerificationModel
     const verificationTokenData = await TokenVerification.create({
-      userId: newUser._id || newUser.id,
-      token: passwordEncrypt((newUser._id || newUser.id) + Date.now()),
+      userId: newUser._id,
+      token: passwordEncrypt(newUser._id + Date.now()),
     });
 
     // Send email to user
@@ -194,15 +172,6 @@ module.exports = {
         type: 'string'
       }
   */
-    /*
-      - Retrieves the token from url.
-      - Checks if a token exists in TokenVerificationModel.
-      - Finds the user associated with the token in UserModel.
-      - Activates the user's account by setting isActive to true.
-      - Deletes the verification token from TokenVerificationModel.
-      - Redirects the user to the contract page upon successful verification.
-     */
-
     const token = req.params.token;
 
     // Check existance of provided token in tokenVerifications collection
@@ -227,7 +196,7 @@ module.exports = {
     await user.save();
 
     // Delete VerficiationToken
-    await Token.findByIdAndDelete(tokenData._id || tokenData.id);
+    await Token.findByIdAndDelete(tokenData._id);
 
     // Success response
     res
@@ -251,19 +220,6 @@ module.exports = {
           }
       }
     */
-    /*
-      - Retrieves the email and password from the incoming request.body.
-      - Finds the user by email in the database.
-      - If the user is not found, a 401 error is returned.
-      - If the user is found, the password is validated.
-      - If the password is valid and the user is active, it generates tokens:
-          - Checks if a token exists for the user in the Token collection.
-          - If a token does not exist, it creates a new token.
-          - Generates a JWT access token and a refresh token.
-      - Returns the tokens and user information in the response.
-      - If the user is inactive or the password is invalid, a 401 error is returned.
-    */
-
     const { email, password } = req.body;
     // console.log("Login attempt:", email, password);
 
@@ -348,14 +304,6 @@ module.exports = {
           }
       }
     */
-    /*
-      - Retrieves email from the incoming request.body.
-      - Finds the user by email in UserModel.
-      - Generates a password reset token using JWT and sends it to the user's email.
-      - Returns a success message upon sending the reset email.
-      - In case of an error (no account with provided email), returns a 401 error with an appropriate message.
-    */
-
     const { email } = req.body;
     const user = await User.findOne({ email });
     //console.log(user, "forgot");
@@ -410,23 +358,10 @@ module.exports = {
         description: 'Refresh token received via email',
       }
     */
-    /*
-      - Retrieves email and newPassword from the incoming request.body.
-      - Finds the user by email in UserModel.
-      - Verifies the provided reset token using JWT.
-      - Validate new password before resetting
-      - Updates the user's password with the new hashed and validated password using bcrypt.
-      - Returns a success message and sending a confirmation email upon resetting the password.
-    */
-
     const { email, newPassword } = req.body;
     const { token } = req.params;
 
     const refreshToken = token;
-
-    // console.log("Email:", email); // Debugging
-    // console.log("New Password:", newPassword); // Debugging
-    // console.log("Refresh Token:", refreshToken); // Debugging
 
     if (email && newPassword && refreshToken) {
       // Validate the new password
@@ -452,7 +387,7 @@ module.exports = {
 
       // Verify token
       const decoded = await jwt.verify(refreshToken, process.env.REFRESH_KEY);
-      console.log(decoded, "tokenVerified");
+      // console.log(decoded, "tokenVerified");
 
       if (!decoded) {
         throw new CustomError("Invalid or expired token", 400);
@@ -468,7 +403,7 @@ module.exports = {
         // Reset validated and hashed password
         userToUpdate.password = hashedNewPassword;
         await userToUpdate.save();
-        console.log(userToUpdate, "passwordUpdated");
+        // console.log(userToUpdate, "passwordUpdated");
 
         // Send reset email to user
         const resetEmailSubject = "Password Reset Confirmation!";
@@ -505,22 +440,6 @@ module.exports = {
         }
       }
     */
-    /*
-      - Retrieves the refresh token from the incoming request.body.
-      - Verifies the refresh token using the JWT verification method.
-      - If the refresh token is valid, retrieves the user id and password from the token data.
-      - Checks if the user id and password exist in the token data.
-      - Finds the user by id in the database.
-      - If the user is found and the password matches, checks if the user is active.
-      - If the user is active, generates a new JWT access token with a 9-minute expiration.
-      - Returns the new access token in the response.
-      - If the user is not active, returns a 401 error indicating the user is inactive.
-      - If the user is not found or the password does not match, returns a 401 error.
-      - If there is no id or password in the refresh token, returns a 401 error.
-      - If the refresh token is expired or invalid, returns a 401 error.
-      - If no refresh token is provided, returns a 401 error.
-    */
-
     const refreshToken = req.body?.bearer?.refresh;
 
     if (refreshToken) {
@@ -531,12 +450,12 @@ module.exports = {
       );
 
       if (refreshData) {
-        const { id } = refreshData;
+        const { _id } = refreshData;
 
         // Check if id exist in token data
-        if (id) {
+        if (_id) {
           // Find the user by id in the database
-          const user = await User.findOne({ _id: id });
+          const user = await User.findOne({ _id });
 
           if (user) {
             // Check if the user is active
@@ -585,12 +504,6 @@ module.exports = {
       #swagger.tags = ["Authentication"]
       #swagger.summary = "SimpleToken: Logout"
       #swagger.description = 'Delete simple token key and put JWT to the Blacklist.'
-    */
-    /*
-      - Retrieves the authorization header from the incoming request.headers.
-      - Splits the authorization header to extract the token.
-      - Deletes the token from the Token collection in the database (for both simple token and JWT).
-      - Returns a success message with the result of the token deletion.
     */
 
     const auth = req.headers?.authorization;

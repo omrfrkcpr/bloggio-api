@@ -6,9 +6,9 @@ const Token = require("../models/token");
 
 // Generate Simple Token
 const generateSimpleToken = async (user) => {
-  const token = passwordEncrypt((user._id || user.id) + Date.now());
+  const token = passwordEncrypt((user._id) + Date.now());
   const tokenData = await Token.create({
-    userId: user._id || user.id,
+    userId: user._id,
     token: token,
   });
 
@@ -22,7 +22,7 @@ const generateAccessToken = (user) => {
     key: process.env.ACCESS_KEY,
     time: process.env.ACCESS_EXP || "30m",
     data: {
-      id: user._id || user.id,
+      _id: user._id,
       email: user.email,
       isActive: user.isActive,
       isAdmin: user.isAdmin,
@@ -43,7 +43,7 @@ const generateRefreshToken = (user) => {
     key: process.env.REFRESH_KEY,
     time: process.env.REFRESH_EXP || "3d",
     data: {
-      id: user._id || user.id,
+      _id: user._id,
     },
   };
 
