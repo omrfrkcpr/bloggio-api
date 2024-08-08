@@ -13,4 +13,5 @@ module.exports = {
   ACCESS_EXP: process.env?.ACCESS_EXP || "30m",
   REFRESH_KEY: process.env?.REFRESH_KEY,
   REFRESH_EXP: process.env?.REFRESH_EXP || "2d",
+  VERSION: process.env?.VERSION,
 };

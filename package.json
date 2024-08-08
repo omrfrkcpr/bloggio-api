@@ -17,13 +17,22 @@
   },
   "homepage": "https://github.com/omrfrkcpr/bloggio-api#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-errors": "^3.1.1",
     "html-to-text": "^9.0.5",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.2",
-    "nodemon": "^3.1.4"
+    "nodemailer": "^6.9.14",
+    "nodemon": "^3.1.4",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "redoc-express": "^2.1.0",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1",
+    "validator": "^13.12.0"
   }
 }

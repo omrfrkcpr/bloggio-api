@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema(
       maxlength: 15,
       trim: true,
     },
+    googleId: String,
     avatar: {
       type: String,
       default:

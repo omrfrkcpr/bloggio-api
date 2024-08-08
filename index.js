@@ -3,7 +3,7 @@
 require("express-async-errors");
 const express = require("express");
 const app = express();
-const { CLIENT_URL, PORT, HOST } = require("./constants");
+const { CLIENT_URL, PORT, HOST, VERSION } = require("./constants");
 
 //Connect Database
 const { connectDB } = require("./src/configs/dbConnection");
@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 });
 
 // Routes:
-app.use(require("./src/routes"));
+app.use(`api/${VERSION}`, require("./src/routes"));
 
 // errorHandler:
 app.use(require("./src/middlewares/errorHandler"));

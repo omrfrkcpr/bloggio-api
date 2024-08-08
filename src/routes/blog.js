@@ -1,17 +1,19 @@
-// "use strict";
+"use strict";
 
-// const router = require("express").Router();
-// const blog = require("../controllers/blog");
+const router = require("express").Router();
+const blog = require("../controllers/blog");
 
-// // URL: /blogs
+// URL: /blogs
 
-// router.route("/").get(blog.list).post(blog.create);
+router.route("/").get(blog.list).post(blog.create);
 
-// router
-//   .route("/:id")
-//   .get(blog.read)
-//   .put(blog.update)
-//   .patch(blog.update)
-//   .delete(blog.delete);
+router.route("/:id/like").put(blog.like);
 
-// module.exports = router;
+router
+  .route("/:id")
+  .get(blog.read)
+  .put(blog.update)
+  .patch(blog.update)
+  .delete(blog.delete);
+
+module.exports = router;

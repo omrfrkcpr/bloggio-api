@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Bloggio</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .header img {
+        max-width: 150px;
+      }
+      .content {
+        padding: 20px;
+      }
+      .content h1 {
+        color: #333;
+      }
+      .content p {
+        line-height: 1.6;
+        margin-top: 1rem;
+      }
+      .content a {
+        color: #B9D0F0;
+        text-decoration: none;
+      }
+      .content a:hover {
+        text-decoration: underline;
+      }
+      .company {
+        background-color: white;
+        display: flex;
+        text-align: left;
+        width: fit-content;
+        flex-direction: column;
+        justify-content: center;
+        align-items: start;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        padding: 1rem;
+      }
+      .company p {
+        margin: 0;
+      }
+      .footer {
+        text-align: center;
+        padding: 10px 0;
+        border-top: 1px solid #e0e0e0;
+        margin-top: 20px;
+        font-size: 12px;
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="https://media.licdn.com/dms/image/D4E0BAQGjEbyuclAkVQ/company-logo_100_100/0/1721344095827?e=1729728000&v=beta&t=IqB8V-K4rOaY0hSxOaODnzG6ao1RRp-knFiVhqqUtHo" alt="HabitHub Logo" />
+      </div>
+      <div class="content">
+        <h1>Welcome to Bloggio, {{firstName}}!</h1>
+        <p>
+          Thank you for registering with Bloggio. We are thrilled to have you on board!
+        </p>
+        <p>
+          Bloggio is designed to help you track and build positive habits,
+          providing you with the tools you need to achieve your goals and
+          improve your daily routine.
+        </p>
+        <h2>Get Started</h2>
+        <p>
+          To get started, please confirm your email address by clicking the link
+          below:
+        </p>
+        <p>
+          <a
+            href="{{clientUrl}}/verify-email/{{token}}"
+            background-color: #B9D0F0;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            >Verify Email Address</a
+          >
+        </p>
+        <p>
+          If the link above does not work, please copy and paste the following
+          URL into your browser:
+        </p>
+        <p>
+          <a href="{{clientUrl}}/verify-email/{{token}}"
+            >{{clientUrl}}/verify-email/{{token}}</a
+          >
+        </p>
+
+        <p>
+          This verification link is valid for 1 hour. After that you have to register again. If you didn't request this link, please ignore this email.
+        </p>
+
+        <h2>Need Help?</h2>
+        <p>
+          If you have any questions or need assistance, feel free to reply to
+          this email or visit our
+          <a href="mailto:e.habithub@gmail.com">Support Center</a>
+        </p>
+        <p>
+          Thank you for choosing Bloggio. We look forward to helping you
+          achieve your goals!
+        </p>
+
+        <div class="company">
+          <img
+            src="https://media.licdn.com/dms/image/D4E0BAQGjEbyuclAkVQ/company-logo_100_100/0/1721344095827?e=1729728000&v=beta&t=IqB8V-K4rOaY0hSxOaODnzG6ao1RRp-knFiVhqqUtHo"
+            alt="bloggio-logo"
+            width="60px"
+            height="60px"
+          />
+          <p>Best regards,</p>
+          <p>The Bloggio Team</p>
+        </div>
+      </div>
+      <div class="footer">
+        <p>&copy; 2024 Bloggio. All rights reserved.</p>
+        <p>37081 Goettingen, Germany</p>
+      </div>
+    </div>
+  </body>
+</html>
