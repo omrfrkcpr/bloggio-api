@@ -1,17 +1,22 @@
-// "use strict";
+"use strict";
 
-// const router = require("express").Router();
-// const category = require("../controllers/category");
+const router = require("express").Router();
+const category = require("../controllers/category");
+const { isAdmin, isStaffOrAdmin } = require("../middlewares/permissions");
+const idValidation = require("../middlewares/idValidation");
 
-// // URL: /categories
+// URL: /categories
 
-// router.route("/").get(category.list).post(category.create);
+const { list, create, read, update } = category;
 
-// router
-//   .route("/:id")
-//   .get(category.read)
-//   .put(category.update)
-//   .patch(category.update)
-//   .delete(category.delete);
+router.route("/").get(list).post(isStaffOrAdmin, create);
 
-// module.exports = router;
+router
+  .route("/:id")
+  .all(idValidation, isStaffOrAdmin)
+  .get(isStaffOrAdmin, read)
+  .put(isStaffOrAdmin, update)
+  .patch(isStaffOrAdmin, update)
+  .delete(isAdmin, category.delete);
+
+module.exports = router;

@@ -1,10 +1,8 @@
 "use strict";
 
 const { mongoose } = require("../configs/dbConnection");
-const passwordEncrypt = require("../helpers/passwordEncrypt");
-const { validateEmail, validatePassword } = require("../helpers/userValidator");
-const Blog = require("../models/blog");
-const Comment = require("../models/comment");
+const validator = require("validator");
+const { CustomError } = require("../errors/customError");
 
 /*
   {
@@ -52,14 +50,35 @@ const userSchema = new mongoose.Schema(
       default:
         "https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg",
     },
+    city: {
+      type: String,
+      trim: true,
+    },
+    bio: {
+      type: String,
+      maxlength: 2000,
+      trim: true,
+    },
     email: {
       type: String,
       required: true,
+      index: true,
       unique: true,
+      validate: [validator.isEmail, "Please provide a valid email address"],
     },
     password: {
       type: String,
       required: true,
+      validate: [
+        (password) => {
+          if (
+            !validator.isStrongPassword(password, [
+              { minLength: 6, symbols: "@!#$%" },
+            ])
+          )
+            throw new CustomError("Password is invalid");
+        },
+      ],
     },
     saved: [
       {
@@ -86,34 +105,13 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.pre(["save", "updateOne"], function (next) {
-  const data = this?._update || this;
-
-  if (data.email && !validateEmail(data.email)) {
-    return next(new Error("Invalid Email address!"));
-  }
-
-  if (data?.password) {
-    if (!validatePassword(data.password)) {
-      return next(new Error("Invalid Password!"));
-    }
-    data.password = passwordEncrypt(data.password);
-
-    if (this?._update) {
-      this._update = data;
-    } else {
-      this.password = data.password;
-    }
-  }
-  next();
-});
-
 userSchema.set("toJSON", {
   virtuals: true,
   versionKey: false, // hide __v
   transform: (doc, ret) => {
     // extract __v only
     delete ret.__v;
+    delete ret.id;
     return ret;
   },
 });

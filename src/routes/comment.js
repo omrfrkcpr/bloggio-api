@@ -1,17 +1,29 @@
-// "use strict";
+"use strict";
 
-// const router = require("express").Router();
-// const comment = require("../controllers/comment");
+const router = require("express").Router();
+const comment = require("../controllers/comment");
+const {
+  isLogin,
+  isCommentOwnerOrAdmin,
+  isStaffOrAdmin,
+} = require("../middlewares/permissions");
+const idValidation = require("../middlewares/idValidation");
 
-// // URL: /comments
+// URL: /comments
 
-// router.route("/").get(comment.list).post(comment.create);
+const { list, create, blogComments, like, read, update } = comment;
 
-// router
-//   .route("/:id")
-//   .get(comment.read)
-//   .put(comment.update)
-//   .patch(comment.update)
-//   .delete(comment.delete);
+router.use(isLogin);
 
-// module.exports = router;
+router.route("/").get(isStaffOrAdmin, list).post(create);
+router.route("/blog/:id").get(idValidation, blogComments);
+router.route("/like/:id").put(idValidation, like);
+router
+  .route("/:id")
+  .all(idValidation, isCommentOwnerOrAdmin)
+  .get(read)
+  .put(update)
+  .patch(update)
+  .delete(comment.delete);
+
+module.exports = router;

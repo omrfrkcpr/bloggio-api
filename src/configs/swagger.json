@@ -40,7 +40,7 @@
     "application/json"
   ],
   "paths": {
-    "api/${VERSION}/auth/register": {
+    "/api/v1/auth/register": {
       "post": {
         "tags": [
           "Authentication"
@@ -48,12 +48,6 @@
         "summary": "Register",
         "description": "Register with valid firstName, lastName, email and password",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -84,14 +78,11 @@
         "responses": {
           "201": {
             "description": "Created"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/auth/verify-email/{token}": {
+    "/api/v1/auth/verify-email/{token}": {
       "post": {
         "tags": [
           "Authentication"
@@ -99,12 +90,6 @@
         "summary": "Verification",
         "description": "Verify user email with a verification token",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "token",
             "in": "path",
@@ -116,14 +101,11 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
         "tags": [
           "Authentication"
@@ -131,12 +113,6 @@
         "summary": "Login",
         "description": "Login with email and password for get simpleToken and JWT",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -159,42 +135,28 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/auth/logout": {
+    "/api/v1/auth/logout": {
       "get": {
         "tags": [
           "Authentication"
         ],
         "summary": "SimpleToken: Logout",
         "description": "Delete simple token key and put JWT to the Blacklist.",
-        "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
           },
           "400": {
             "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/auth/refresh": {
+    "/api/v1/auth/refresh": {
       "post": {
         "tags": [
           "Authentication"
@@ -202,12 +164,6 @@
         "summary": "JWT: Refresh",
         "description": "Refresh accessToken with  ",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -231,14 +187,11 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/auth/forgot": {
+    "/api/v1/auth/forgot": {
       "post": {
         "tags": [
           "Authentication"
@@ -246,12 +199,6 @@
         "summary": "Forgot",
         "description": "Request a url with email to reset password",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -270,14 +217,11 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/auth/reset/{token}": {
+    "/api/v1/auth/reset/{token}": {
       "post": {
         "tags": [
           "Authentication"
@@ -285,12 +229,6 @@
         "summary": "JWT: Reset",
         "description": "Reset password with email, new password, and refresh token.",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "token",
             "in": "path",
@@ -320,46 +258,27 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/auth/google": {
+    "/api/v1/auth/google": {
       "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
-          "404": {
-            "description": "Not Found"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "api/${VERSION}/auth/google/callback": {
+    "/api/v1/auth/google/callback": {
       "get": {
         "tags": [
           "Authentication"
         ],
         "summary": "Successful Authentication Callback",
         "description": "Handles successful authentication, generates tokens, and redirects the user to the client URL with user data encoded in the query parameters.",
-        "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
           "302": {
             "description": "Redirects to the client URL with user data",
@@ -391,9 +310,6 @@
                 "name": "main"
               }
             }
-          },
-          "404": {
-            "description": "Not Found"
           }
         },
         "security": [
@@ -403,27 +319,16 @@
         ]
       }
     },
-    "api/${VERSION}/blogs/": {
+    "/api/v1/blogs/": {
       "get": {
         "tags": [
           "Blogs"
         ],
         "summary": "List Blogs",
         "description": "\r  You can use <u>filter[] & search[] & sort[] & page & limit</u> queries with endpoint.\r  <ul> Examples:\r   <li>URL/?<b>filter[field1]=value1&filter[field2]=value2</b></li>\r   <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r   <li>URL/?<b>sort[field1]=asc&sort[field2]=desc</b></li>\r   <li>URL/?<b>limit=10&page=1</b></li>\r  </ul>\r  ",
-        "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       },
@@ -434,12 +339,6 @@
         "summary": "Create Blog",
         "description": "",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -457,22 +356,16 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "api/${VERSION}/blogs/{id}/like": {
+    "/api/v1/blogs/{id}/like": {
       "put": {
         "description": "",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "id",
             "in": "path",
@@ -483,23 +376,14 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/blogs/{id}/save": {
+    "/api/v1/blogs/{id}/save": {
       "put": {
         "description": "",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "id",
             "in": "path",
@@ -510,14 +394,11 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/blogs/{id}": {
+    "/api/v1/blogs/{id}": {
       "get": {
         "tags": [
           "Blogs"
@@ -525,12 +406,6 @@
         "summary": "Get Single Blog",
         "description": "",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "id",
             "in": "path",
@@ -542,9 +417,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       },
@@ -555,12 +427,6 @@
         "summary": "Update Blog",
         "description": "",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "id",
             "in": "path",
@@ -578,8 +444,8 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found"
+          "default": {
+            "description": ""
           }
         }
       },
@@ -590,12 +456,6 @@
         "summary": "Delete Blog",
         "description": "",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "id",
             "in": "path",
@@ -621,12 +481,6 @@
         "description": "",
         "parameters": [
           {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "id",
             "in": "path",
             "required": true,
@@ -643,33 +497,22 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "api/${VERSION}/users/": {
+    "/api/v1/users/": {
       "get": {
         "tags": [
           "Users"
         ],
         "summary": "List Users",
         "description": "\r  You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
-        "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       },
@@ -680,12 +523,6 @@
         "summary": "Create User",
         "description": "Handles user feedback submission by validating input and sending feedback via email.",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -806,13 +643,13 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "api/${VERSION}/users/feedback": {
+    "/api/v1/users/feedback": {
       "post": {
         "tags": [
           "Users"
@@ -820,12 +657,6 @@
         "summary": "Submit Feedback",
         "description": "Handles user feedback submission by validating input and sending feedback via email.",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -933,14 +764,11 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }
     },
-    "api/${VERSION}/users/{id}": {
+    "/api/v1/users/{id}": {
       "get": {
         "tags": [
           "Users"
@@ -948,12 +776,6 @@
         "summary": "Get Single User",
         "description": "",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "id",
             "in": "path",
@@ -965,9 +787,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       },
@@ -978,12 +797,6 @@
         "summary": "Update User",
         "description": "Handles user feedback submission by validating input and sending feedback via email.",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "id",
             "in": "path",
@@ -1104,8 +917,8 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found"
+          "default": {
+            "description": ""
           }
         }
       },
@@ -1117,17 +930,301 @@
         "description": "",
         "parameters": [
           {
-            "name": "VERSION",
+            "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
+            "type": "string",
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update User",
+        "description": "Handles user feedback submission by validating input and sending feedback via email.",
+        "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
             "description": "User ID"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Name of the user"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "John Doe"
+                        }
+                      }
+                    },
+                    "email": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "format": {
+                          "type": "string",
+                          "example": "email"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Email address of the user"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "john.doe@example.com"
+                        }
+                      }
+                    },
+                    "subject": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Subject of the feedback"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Feedback Subject"
+                        }
+                      }
+                    },
+                    "feedback": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Feedback message"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "This is a feedback message."
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": {
+                  "type": "array",
+                  "example": [
+                    "name",
+                    "email",
+                    "feedback"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "Feedback submission data"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user",
+            "required": true,
+            "type": "string",
+            "example": "60c72b2f9f1b2c6f4c8e9b6a"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/comments/": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "List Comments",
+        "description": "\r  You can use <u>filter[] & search[] & sort[] & page & limit</u> queries with endpoint.\r  <ul> Examples:\r   <li>URL/?<b>filter[field1]=value1&filter[field2]=value2</b></li>\r   <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r   <li>URL/?<b>sort[field1]=asc&sort[field2]=desc</b></li>\r   <li>URL/?<b>limit=10&page=1</b></li>\r  </ul>\r  ",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Create Comment",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/comments/blog/{id}": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Get Comments for a Blog",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Blog Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/comments/like/{id}": {
+      "put": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Like or Unlike Comment",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Comment Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/comments/{id}": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Get Single Comment",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Comment Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Update Comment",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Comment Id"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Delete Comment",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Comment Id"
           }
         ],
         "responses": {
@@ -1141,139 +1238,171 @@
       },
       "patch": {
         "tags": [
-          "Users"
+          "Comments"
         ],
-        "summary": "Update User",
-        "description": "Handles user feedback submission by validating input and sending feedback via email.",
+        "summary": "Update Comment",
+        "description": "",
         "parameters": [
-          {
-            "name": "VERSION",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string",
-            "description": "User ID"
+            "description": "Comment Id"
           },
           {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "object"
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "description": {
-                          "type": "string",
-                          "example": "Name of the user"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "John Doe"
-                        }
-                      }
-                    },
-                    "email": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "format": {
-                          "type": "string",
-                          "example": "email"
-                        },
-                        "description": {
-                          "type": "string",
-                          "example": "Email address of the user"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "john.doe@example.com"
-                        }
-                      }
-                    },
-                    "subject": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "description": {
-                          "type": "string",
-                          "example": "Subject of the feedback"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "Feedback Subject"
-                        }
-                      }
-                    },
-                    "feedback": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "description": {
-                          "type": "string",
-                          "example": "Feedback message"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "This is a feedback message."
-                        }
-                      }
-                    }
-                  }
-                },
-                "required": {
-                  "type": "array",
-                  "example": [
-                    "name",
-                    "email",
-                    "feedback"
-                  ],
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "description": "Feedback submission data"
-          },
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "ID of the user",
-            "required": true,
-            "type": "string",
-            "example": "60c72b2f9f1b2c6f4c8e9b6a"
+              "$ref": "#/definitions/Comment"
+            }
           }
         ],
         "responses": {
+          "202": {
+            "description": "Accepted"
+          },
           "404": {
             "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/categories/": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "List Categories",
+        "description": "\r  You can use <u>filter[] & search[] & sort[] & page & limit</u> queries with endpoint.\r  <ul> Examples:\r   <li>URL/?<b>filter[name]=value</b></li>\r   <li>URL/?<b>sort[name]=asc</b></li>\r   <li>URL/?<b>limit=10&page=1</b></li>\r  </ul>\r  ",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Create Category",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/v1/categories/{id}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Get Single Category",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Category Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Update Category",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Category Id"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Delete Category",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Category Id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Update Category",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Category Id"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
           }
         }
       }
@@ -1512,9 +1641,23 @@
               "type": "boolean",
               "example": true
             },
+            "index": {
+              "type": "boolean",
+              "example": true
+            },
             "unique": {
               "type": "boolean",
               "example": true
+            },
+            "validate": {
+              "type": "array",
+              "example": [
+                null,
+                "Please provide a valid email address"
+              ],
+              "items": {
+                "type": "string"
+              }
             }
           }
         },
@@ -1527,6 +1670,15 @@
             "required": {
               "type": "boolean",
               "example": true
+            },
+            "validate": {
+              "type": "array",
+              "example": [
+                null
+              ],
+              "items": {
+                "type": "function"
+              }
             }
           }
         },

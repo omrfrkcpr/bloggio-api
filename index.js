@@ -12,7 +12,6 @@ const {
   CLIENT_URL,
   PORT,
   HOST,
-  VERSION,
   NODE_ENV,
   SECRET_KEY,
   MONGODB_URI,
@@ -26,7 +25,7 @@ connectDB();
 const cors = require("cors");
 
 const corsOptions = {
-  origin: CLIENT_URL,
+  // origin: CLIENT_URL,
   methods: ["GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 204,
   credentials: true,
@@ -82,15 +81,15 @@ app.all("/", (req, res) => {
   });
 });
 
+// Routes:
+app.use("/api/v1", require("./src/routes"));
+
 app.use((req, res, next) => {
   res.status(404).send({
     error: true,
     message: "Route not found!",
   });
 });
-
-// Routes:
-app.use(`api/${VERSION}`, require("./src/routes"));
 
 // errorHandler:
 app.use(require("./src/middlewares/errorHandler"));

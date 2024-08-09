@@ -1,6 +1,6 @@
 "use strict";
 
-const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$?!%&*]).{8,50}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$?!%&*]).{8,50}$/;
 
 // Password must contain;
 //  at least one uppercase

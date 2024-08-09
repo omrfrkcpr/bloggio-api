@@ -6,6 +6,7 @@
 const { CustomError } = require("../errors/customError");
 const Blog = require("../models/blog");
 const User = require("../models/user");
+const Comment = require("../models/comment");
 const { NODE_ENV } = require("../../constants");
 
 module.exports = {
@@ -80,6 +81,20 @@ module.exports = {
 
     const blog = await Blog.findById(req.params.id);
     if (req.user.isAdmin || String(blog.userId) === String(req.user._id)) {
+      next();
+    } else {
+      throw new CustomError(
+        "No Permission: Only admin or owner can perform this action!",
+        403
+      );
+    }
+  },
+
+  isCommentOwnerOrAdmin: async (req, res, next) => {
+    if (!NODE_ENV) return next(); // true on development
+
+    const comment = await Comment.findById(req.params.id);
+    if (req.user.isAdmin || String(comment.userId) === String(req.user._id)) {
       next();
     } else {
       throw new CustomError(

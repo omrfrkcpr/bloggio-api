@@ -30,10 +30,17 @@ module.exports = {
         </ul>
       `
     */
-    const data = await res.getModelList(User);
+
+    let listFilter = {};
+
+    if (!req.user.isAdmin) {
+      listFilter._id = req.user._id;
+    }
+
+    const data = await res.getModelList(User, listFilter);
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(User),
+      details: await res.getModelListDetails(User, listFilter),
       data,
     });
   },
@@ -252,7 +259,7 @@ module.exports = {
     });
   },
   // feedback => POST
-  handleFeedback: async (req, res) => {
+  feedback: async (req, res) => {
     /*
       #swagger.tags = ["Users"]
       #swagger.summary = "Submit Feedback"
@@ -334,6 +341,60 @@ module.exports = {
         new: user,
       });
     }
+  },
+  // /:id/statistics => GET
+  statistics: async (req, res) => {
+    const userId = req.params.id;
+
+    // Blogs statistics using aggregate
+    const blogsStats = await Blog.aggregate([
+      { $match: { userId: mongoose.Types.ObjectId(userId) } }, // filter spesific blogs based on userId
+      {
+        $group: {
+          _id: null,
+          totalBlogs: { $sum: 1 },
+          publishedBlogs: { $sum: { $cond: ["$isPublish", 1, 0] } },
+          unpublishedBlogs: { $sum: { $cond: [{ $not: "$isPublish" }, 1, 0] } },
+          totalLikes: { $sum: { $size: "$likes" } },
+          totalVisitors: { $sum: "$countOfVisitors" },
+        },
+      },
+    ]);
+
+    const blogStats = blogsStats[0] || {
+      totalBlogs: 0,
+      publishedBlogs: 0,
+      unpublishedBlogs: 0,
+      totalLikes: 0,
+      totalVisitors: 0,
+    };
+
+    // Comments statistics using aggregate
+    const commentsStats = await Comment.aggregate([
+      { $match: { userId: mongoose.Types.ObjectId(userId) } }, // filter spesific comments based on userId
+      {
+        $group: {
+          _id: null,
+          totalComments: { $sum: 1 },
+          totalLikes: { $sum: { $size: "$likes" } },
+        },
+      },
+    ]);
+
+    const commentStats = commentsStats[0] || {
+      totalComments: 0,
+      totalLikes: 0,
+    };
+
+    res.status(200).send({
+      error: false,
+      data: {
+        ...blogStats,
+        totalComments: commentStats.totalComments,
+        totalCommentLikes: commentStats.totalLikes,
+      },
+      message: "User statistics successfully retrieved!",
+    });
   },
   // /:id => DELETE
   delete: async (req, res) => {

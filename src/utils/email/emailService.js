@@ -4,14 +4,15 @@
 const nodemailer = require("nodemailer");
 const { CustomError } = require("../../errors/customError");
 const { getFeedbackHtml } = require("./feedback/feedback");
+const { NODEMAILER_EMAIL, NODEMAILER_PASSWORD } = require("../../../constants");
 
 /* -------------------------------------------------------------------------- */
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: process.env.NODEMAILER_EMAIL,
-    pass: process.env.NODEMAILER_PASSWORD,
+    user: NODEMAILER_EMAIL,
+    pass: NODEMAILER_PASSWORD,
   },
 });
 // console.log(transporter);
@@ -19,7 +20,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, html) => {
   try {
     const info = await transporter.sendMail({
-      from: `"Bloggio" <${process.env.NODEMAILER_EMAIL}>`,
+      from: `"Bloggio" <${NODEMAILER_EMAIL}>`,
       to,
       subject,
       html,
@@ -36,8 +37,8 @@ const sendFeedbackEmail = async (name, email, subject, feedback) => {
     const htmlContent = getFeedbackHtml(name, email, subject, feedback);
 
     const info = await transporter.sendMail({
-      from: `"Bloggio" <${process.env.NODEMAILER_EMAIL}>`,
-      to: process.env.NODEMAILER_EMAIL,
+      from: `"Bloggio" <${NODEMAILER_EMAIL}>`,
+      to: NODEMAILER_EMAIL,
       subject: `Feedback: ${subject}`,
       html: htmlContent,
     });

@@ -20,11 +20,20 @@ module.exports = {
             `
         */
 
-    const data = await res.getModelList(Blog, {}, ["userId", "categoryId"]);
+    let listFilter = {};
+
+    if (!req.user?.isAdmin) {
+      listFilter.userId = req.user?._id;
+    }
+
+    const data = await res.getModelList(Blog, listFilter, [
+      "userId",
+      "categoryId",
+    ]);
 
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(Blog),
+      details: await res.getModelListDetails(Blog, listFilter),
       data,
       trendings: await Blog.find().sort({ countOfVisitor: -1 }).limit(10),
     });
@@ -44,7 +53,13 @@ module.exports = {
             }
         */
 
-    const data = await Blog.create(req.body);
+    let userId = req.user._id;
+
+    if (req.user?.isAdmin) {
+      userId = req.body?.userId;
+    }
+
+    const data = await Blog.create({ ...req.body, userId });
 
     res.status(200).send({
       error: false,
@@ -105,17 +120,25 @@ module.exports = {
             }
         */
 
-    const data = await Blog.findOneAndUpdate({ _id: req.params.id }, req.body, {
-      runValidators: true,
-      new: true,
-    });
+    let userId = req.user._id;
 
-    res.status(data.modifiedCount ? 202 : 404).send({
-      error: !data.modifiedCount,
+    if (req.user?.isAdmin) {
+      userId = req.body?.userId;
+    }
+
+    const data = await Blog.updateOne(
+      { _id: req.params.id, userId },
+      req.body,
+      {
+        runValidators: true,
+        new: true,
+      }
+    );
+
+    res.status(202).send({
+      error: false,
       new: data,
-      message: data.modifiedCount
-        ? "Blog successfully updated!"
-        : "Blog not found!",
+      message: "Blog successfully updated!",
     });
   },
 
@@ -174,7 +197,13 @@ module.exports = {
             }
         */
 
-    const data = await Blog.deleteOne({ _id: req.params.id });
+    let userId = req.user._id;
+
+    if (req.user.isAdmin) {
+      userId = req.body.userId;
+    }
+
+    const data = await Blog.deleteOne({ _id: req.params.id, userId });
 
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,

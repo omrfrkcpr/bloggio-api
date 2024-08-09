@@ -19,6 +19,10 @@ const DEFAULT_IMAGE_URL =
       "64cbbd50e4b0c9f12f9d78f3",
       "64cbbd50e4b0c9f12f9d78f4"
     ],
+    "tags": [
+      "react",
+      "javascript"
+    ],
     "countOfVisitors": 128,
     "blogDetails": {
       "countOfLikes": 2,
@@ -66,6 +70,13 @@ const blogSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+      },
+    ],
+    tags: [
+      {
+        type: String,
+        trim: true,
+        maxlength: 25,
       },
     ],
     countOfVisitors: {
@@ -133,6 +144,7 @@ blogSchema.set("toJSON", {
       readTime: ret.readTime,
     };
     delete ret.__v;
+    delete ret.id;
     delete ret.updatedAt;
     return ret;
   },
