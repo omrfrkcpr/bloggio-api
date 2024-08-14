@@ -8,29 +8,28 @@ const DEFAULT_IMAGE_URL =
 
 /*
   {
-    "_id": "64cbbd50e4b0c9f12f9d78f2",
-    "userId": "64cbbd50e4b0c9f12f9d78f1",
-    "categoryId": "64cbbd50e4b0c9f12f9d78f0",
-    "title": "Sample Blog Post",
-    "content": "<h1>Sample Blog Title</h1><p>This is the content of the blog post. It may contain <strong>HTML</strong> tags and <a href='#'>links</a>.</p>",
-    "image": "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg?w=360",
-    "isPublish": true,
-    "likes": [
-      "64cbbd50e4b0c9f12f9d78f3",
-      "64cbbd50e4b0c9f12f9d78f4"
-    ],
-    "tags": [
-      "react",
-      "javascript"
-    ],
-    "countOfVisitors": 128,
-    "blogDetails": {
-      "countOfLikes": 2,
-      "countOfComments": 5,
-      "readTime": "1 min read"
-    },
-    "updatedAtFormatted": "May 5, 2024",
-    "createdAt": "2024-05-01T10:00:00.000Z"
+      "_id": "66c6b2f4f0bfa6a3189c8d77",
+      "userId": "66b5fb9d4a5a46b8162e77c5",
+      "categoryId": "66b615ba725abfa77820fe58",
+      "title": "The Future of Artificial Intelligence",
+      "content": "<h1>Artificial Intelligence: What the Future Holds</h1><p>AI is transforming industries and society at large...</p>",
+      "image": "https://example.com/images/ai-future.jpg",
+      "isPublish": true,
+      "likes": null,
+      "tags": [
+          "AI",
+          "Technology",
+          "Future"
+      ],
+      "countOfVisitors": 512,
+      "createdAt": "2024-08-08T15:30:00.000Z",
+      "updatedAt": "August 8, 2024",
+      "blogDetails": {
+          "countOfLikes": 0,
+          "countOfComments": 0,
+          "readTime": "1 min read",
+          "contentPrev": "ARTIFICIAL INTELLIGENCE: WHAT THE FUTURE HOLDS AI is transforming industries and society at large..."
+      }
   }
 */
 
@@ -100,37 +99,29 @@ blogSchema.index({ categoryId: 1 });
 
 //? VIRTUALS
 
-blogSchema.virtual("countOfComments", {
-  ref: "Comment",
-  localField: "_id",
-  foreignField: "blogId",
-  count: true,
-});
+blogSchema.virtual("blogDetails").get(function () {
+  const countOfLikes = this.likes.length;
 
-blogSchema.virtual("updatedAtFormatted").get(function () {
-  return this.updatedAt.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-});
+  // Calculate countOfComments; if undefined, default to 0
+  const countOfComments =
+    this.countOfComments !== undefined ? this.countOfComments : 0;
 
-blogSchema.virtual("contentPrev").get(function () {
-  const textContent = convertHtmlToText(this.content);
-  const words = textContent.split(/\s+/);
-  return words.slice(0, 20).join(" ") + (words.length > 20 ? "..." : "");
-});
-
-blogSchema.virtual("readTime").get(function () {
+  // Calculate readTime
   const averageReadingSpeed = 200; // 200 words per minute
   const textContent = convertHtmlToText(this.content);
-  const words = textContent.split(/\s+/).length;
-  const minutes = Math.ceil(words / averageReadingSpeed);
-  return `${minutes} min read`;
-});
+  const words = textContent.split(/\s+/);
+  const readTime = `${Math.ceil(words.length / averageReadingSpeed)} min read`;
 
-blogSchema.virtual("countOfLikes").get(function () {
-  return this.likes.length;
+  // Generate content preview
+  const contentPrev =
+    words.slice(0, 20).join(" ") + (words.length > 20 ? "..." : "");
+
+  return {
+    countOfLikes,
+    countOfComments,
+    readTime,
+    contentPrev,
+  };
 });
 
 //? RESPONSE STRUCTURE
@@ -138,16 +129,24 @@ blogSchema.set("toJSON", {
   virtuals: true,
   versionKey: false, // hide __v
   transform: (doc, ret) => {
-    ret.blogDetails = {
-      countOfLikes: ret.countOfLikes,
-      countOfComments: ret.countOfComments,
-      readTime: ret.readTime,
-    };
+    // Format updatedAt
+    ret.updatedAt = ret.updatedAt.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    // Convert empty arrays to null
+    if (ret.likes && ret.likes.length === 0) {
+      ret.likes = null;
+    }
+    if (ret.tags && ret.tags.length === 0) {
+      ret.tags = null;
+    }
+
     delete ret.__v;
     delete ret.id;
-    delete ret.updatedAt;
     return ret;
   },
 });
-
 module.exports = mongoose.model("Blog", blogSchema);

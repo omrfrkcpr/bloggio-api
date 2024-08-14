@@ -20,20 +20,14 @@ module.exports = {
             `
         */
 
-    let listFilter = {};
-
-    if (!req.user?.isAdmin) {
-      listFilter.userId = req.user?._id;
-    }
-
-    const data = await res.getModelList(Blog, listFilter, [
-      "userId",
-      "categoryId",
+    const data = await res.getModelList(Blog, {}, [
+      { path: "userId", select: "firstName lastName avatar username" },
+      { path: "categoryId", select: "name" },
     ]);
 
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(Blog, listFilter),
+      details: await res.getModelListDetails(Blog),
       data,
       trendings: await Blog.find().sort({ countOfVisitor: -1 }).limit(10),
     });
@@ -83,14 +77,12 @@ module.exports = {
 
     const blogId = req.params.id;
 
-    if (req.isFirstVisit) {
-      // If passed from checkVisitSession middleware, then increase countOfVisitors of this Blog
-      await Blog.findByIdAndUpdate(
-        blogId,
-        { $inc: { countOfVisitors: 1 } },
-        { new: true }
-      );
-    }
+    // If passed from checkVisitSession middleware, then increase countOfVisitors of this Blog
+    await Blog.findByIdAndUpdate(
+      blogId,
+      { $inc: { countOfVisitors: 1 } },
+      { new: true }
+    );
 
     const data = await Blog.findById(blogId).populate(["userId", "categoryId"]);
 
@@ -178,9 +170,13 @@ module.exports = {
       await User.findByIdAndUpdate(userId, { $addToSet: { saved: blogId } });
     }
 
+    // Retrieve the updated user
+    const updatedUser = await User.findById(userId);
+
     res.status(200).send({
       error: false,
       message: alreadySaved ? "Blog removed" : "Blog saved",
+      new: updatedUser,
     });
   },
 

@@ -25,7 +25,7 @@ connectDB();
 const cors = require("cors");
 
 const corsOptions = {
-  // origin: CLIENT_URL,
+  origin: CLIENT_URL,
   methods: ["GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 204,
   credentials: true,
@@ -63,7 +63,7 @@ app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Limit requests from same IP
-app.use("/", generalRateLimiter);
+// app.use("/", generalRateLimiter);
 
 // Logger:
 app.use(require("./src/middlewares/logger"));
@@ -74,15 +74,15 @@ app.use(require("./src/middlewares/authentication"));
 // findSearchSortPage / res.getModelList:
 app.use(require("./src/middlewares/queryHandler"));
 
+// Routes:
+app.use("/api/v1", require("./src/routes"));
+
 app.all("/", (req, res) => {
   res.send({
     error: false,
     message: "Welcome to Bloggio API",
   });
 });
-
-// Routes:
-app.use("/api/v1", require("./src/routes"));
 
 app.use((req, res, next) => {
   res.status(404).send({

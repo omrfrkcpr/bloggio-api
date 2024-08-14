@@ -12,10 +12,9 @@ const {
   authSuccess,
 } = require("../controllers/auth");
 const passport = require("passport");
+const { CLIENT_URL } = require("../../constants");
 
 // BASE_URL: /auth
-
-const client_url = process.env.CLIENT_URL;
 
 router.post("/register", register);
 router.post("/verify-email/:token", verifyEmail);
@@ -37,7 +36,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: true,
-    failureRedirect: `${client_url}/auth/failure`,
+    failureRedirect: `${CLIENT_URL}/auth/failure`,
   }),
   authSuccess
 );

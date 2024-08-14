@@ -16,7 +16,8 @@ router.route("/:id/save").put(isLogin, idValidation, save);
 router
   .route("/:id")
   .all(isLogin, idValidation, isBlogOwnerOrAdmin)
-  .get(checkVisitSession, read)
+  // .get(checkVisitSession, read)
+  .get(read)
   .put(update)
   .patch(update)
   .delete(blog.delete);

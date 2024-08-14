@@ -2,14 +2,14 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../../models/user");
 const bcrypt = require("bcrypt");
-const { NODE_ENV } = require("../../../constants");
+const { NODE_ENV, VERSION } = require("../../../constants");
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `/auth/google/callback`,
+      callbackURL: `/api/${VERSION}/auth/google/callback`,
       proxy: NODE_ENV,
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -22,6 +22,7 @@ passport.use(
         if (!user) {
           user = new User({
             googleId: profile.id,
+            username: profile.name.givenName.replace(/\s+/g, "").toLowerCase(),
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
             email: profile.emails[0].value,

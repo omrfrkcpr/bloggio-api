@@ -22,6 +22,7 @@ const {
   generateRefreshToken,
   generateAllTokens,
 } = require("../helpers/tokenGenerator");
+const { CLIENT_URL } = require("../../constants");
 
 module.exports = {
   register: async (req, res) => {
@@ -131,12 +132,11 @@ module.exports = {
         "bearerAuth": []
       }]
     */
-    const client_url = process.env.CLIENT_URL;
     if (!req.user) {
-      return res.redirect(`${client_url}/auth/failure`);
+      return res.redirect(`${CLIENT_URL}/auth/failure`);
     }
     console.log("User: ", req.user);
-    // res.redirect(`${client_url}/auth/success?provider=google`);
+    // res.redirect(`${CLIENT_URL}/auth/success?provider=google`);
     // Successful authentication, send user data to frontend
 
     const { tokenData, accessToken, refreshToken } = await generateAllTokens(
@@ -154,7 +154,7 @@ module.exports = {
       user: req.user,
     };
     res.redirect(
-      `${client_url}/auth/success?provider=google&user=${encodeURIComponent(
+      `${CLIENT_URL}/auth/success?provider=google&user=${encodeURIComponent(
         JSON.stringify(data)
       )}`
     );
