@@ -2,7 +2,7 @@
 
 const router = require("express").Router();
 const blog = require("../controllers/blog");
-const checkVisitSession = require("../middlewares/checkVisitSession");
+// const checkVisitSession = require("../middlewares/checkVisitSession");
 const { isLogin, isBlogOwnerOrAdmin } = require("../middlewares/permissions");
 const idValidation = require("../middlewares/idValidation");
 

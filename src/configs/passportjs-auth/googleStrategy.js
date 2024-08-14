@@ -51,7 +51,10 @@ passport.use(
           }
         }
 
-        user = await User.findOne({ email: profile.emails[0].value });
+        user = await User.findOne({ email: profile.emails[0].value }).populate({
+          path: "saved",
+          populate: [{ path: "userId" }, { path: "categoryId" }],
+        });
 
         // console.log(user)
         return done(null, user);

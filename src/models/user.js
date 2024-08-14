@@ -13,6 +13,9 @@ const { CustomError } = require("../errors/customError");
     "avatar": "https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg",
     "email": "john.doe@example.com",
     "password": "encrypted_password",
+    "saved": [
+      "64cbbd50e4b0c9f12f9d78f1",
+    ]
     "isActive": true,
     "isAdmin": false,
     "isStaff": false,
