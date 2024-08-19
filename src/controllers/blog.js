@@ -29,7 +29,9 @@ module.exports = {
       error: false,
       details: await res.getModelListDetails(Blog),
       data,
-      trendings: await Blog.find().sort({ countOfVisitor: -1 }).limit(10),
+      trendings: await Blog.find({ isPublish: true })
+        .sort({ countOfVisitor: -1 })
+        .limit(10),
     });
   },
 
@@ -200,6 +202,13 @@ module.exports = {
     }
 
     const data = await Blog.deleteOne({ _id: req.params.id, userId });
+
+    if (data.deletedCount) {
+      await User.updateMany(
+        { saved: req.params.id }, // Find the user that has this blog among saved blogs
+        { $pull: { saved: req.params.id } } // Remove this ID from the 'saved' array
+      );
+    }
 
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,

@@ -14,6 +14,7 @@ const { extractDateNumber } = require("../helpers/extractDateNumber");
 const { CustomError } = require("../errors/customError");
 const { sendFeedbackEmail } = require("../utils/email/emailService");
 const { AWS_S3_BUCKET_REGION } = require("../../constants");
+const { mongoose } = require("../configs/dbConnection");
 
 module.exports = {
   // GET
@@ -311,44 +312,39 @@ module.exports = {
       message: "Thank you. We will get back to you as soon as possible!",
     });
   },
-  // agree-contract/:userId => PUT
-  agreeContract: async (req, res) => {
-    /*
-      #swagger.tags = ["Users"]
-      #swagger.summary = "Agree to Contract"
-      #swagger.description = "Updates user agreement status to indicate they have agreed to the contract."
-      #swagger.parameters['userId'] = {
-        in: 'path',
-        description: 'ID of the user',
-        required: true,
-        type: 'string',
-        example: '60c72b2f9f1b2c6f4c8e9b6a'
-      }
-    */
-    if (req.params.userId) {
-      const user = await User.findOneAndUpdate(
-        { _id: req.params.userId },
-        { isAgreed: true },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
-
-      res.status(200).send({
-        error: false,
-        message: "User has agreed to the contract",
-        new: user,
-      });
-    }
-  },
-  // /:id/statistics => GET
+  // /:id/statistics => POST
   statistics: async (req, res) => {
     const userId = req.params.id;
+    // console.log(userId);
+
+    const { timeRange } = req.body;
+    // console.log(timeRange);
+
+    const now = new Date();
+    const filterCondition = {};
+
+    if (timeRange === "Last 3 Months") {
+      filterCondition.createdAt = {
+        $gte: new Date(now.setMonth(now.getMonth() - 3)),
+      };
+    } else if (timeRange === "Last 6 Months") {
+      filterCondition.createdAt = {
+        $gte: new Date(now.setMonth(now.getMonth() - 6)),
+      };
+    } else if (timeRange === "Last 1 Year") {
+      filterCondition.createdAt = {
+        $gte: new Date(now.setFullYear(now.getFullYear() - 1)),
+      };
+    }
 
     // Blogs statistics using aggregate
     const blogsStats = await Blog.aggregate([
-      { $match: { userId: mongoose.Types.ObjectId(userId) } }, // filter spesific blogs based on userId
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          ...filterCondition,
+        },
+      }, // filter spesific blogs based on userId and timeRange
       {
         $group: {
           _id: null,
@@ -369,9 +365,74 @@ module.exports = {
       totalVisitors: 0,
     };
 
+    // Collect comments count for each blog
+    const commentsCountByBlog = await Comment.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          ...filterCondition,
+        },
+      },
+      {
+        $group: {
+          _id: "$blogId", // Group by blogId
+          totalComments: { $sum: 1 }, // Count comments
+        },
+      },
+    ]);
+
+    const commentsCountMap = commentsCountByBlog.reduce((acc, comment) => {
+      acc[comment._id.toString()] = comment.totalComments;
+      return acc;
+    }, {});
+
+    // Find the most popular blog by likes + comments + visitors
+    const userBlogs = await Blog.find({
+      userId: new mongoose.Types.ObjectId(userId),
+      isPublish: true, // Only consider published blogs
+      ...filterCondition,
+    });
+
+    let mostPopularBlog = null;
+    let maxEngagement = 0;
+
+    for (const blog of userBlogs) {
+      const blogId = blog._id.toString();
+      const likes = blog.likes.length;
+      const visitors = blog.countOfVisitors || 0;
+      const comments = commentsCountMap[blogId] || 0;
+
+      const totalEngagement = likes + visitors + comments;
+
+      // search until we find the most popular one
+      if (totalEngagement > maxEngagement) {
+        maxEngagement = totalEngagement;
+        mostPopularBlog = blog;
+      }
+    }
+
+    if (mostPopularBlog) {
+      mostPopularBlog = await Blog.findById(mostPopularBlog._id).populate([
+        "userId",
+        "categoryId",
+      ]);
+    }
+
+    const latestBlog = await Blog.findOne({
+      userId: new mongoose.Types.ObjectId(userId),
+      isPublish: true, // Only consider published blogs
+    })
+      .sort({ createdAt: -1 }) // Sort by creation date descending to get the latest blog
+      .populate(["userId", "categoryId"]);
+
     // Comments statistics using aggregate
     const commentsStats = await Comment.aggregate([
-      { $match: { userId: mongoose.Types.ObjectId(userId) } }, // filter spesific comments based on userId
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          ...filterCondition,
+        },
+      }, // filter spesific comments based on userId
       {
         $group: {
           _id: null,
@@ -386,15 +447,74 @@ module.exports = {
       totalLikes: 0,
     };
 
+    // Collect all users' saved blog IDs
+    const allSavedBlogs = await User.aggregate([
+      { $unwind: "$saved" }, // Creates a separate document for each saved blog
+      {
+        $group: {
+          _id: "$saved", // Groups by blog IDs (if the same blog is saved by more than one user, each one is counted as a separate record.)
+          count: { $sum: 1 }, // Counts the number of times each blog ID has been registered
+        },
+      },
+    ]);
+
+    // Find out how many of the user's blogs are saved
+    const userBlogIds = await Blog.find(
+      { userId: new mongoose.Types.ObjectId(userId) },
+      { _id: 1 } // Get just ids
+    );
+
+    const userBlogIdsSet = new Set(
+      userBlogIds.map((blog) => blog._id.toString())
+    ); // Convert blog ids to set
+
+    const totalSavedBlogs = allSavedBlogs
+      .filter((savedBlog) => userBlogIdsSet.has(savedBlog._id.toString())) // Filter saved blogs based on this user's blogs
+      .reduce((acc, savedBlog) => acc + savedBlog.count, 0); // count all filtered blogs
+
     res.status(200).send({
       error: false,
       data: {
         ...blogStats,
         totalComments: commentStats.totalComments,
         totalCommentLikes: commentStats.totalLikes,
+        totalSavedBlogs,
+        mostPopularBlog: mostPopularBlog || null,
+        latestBlog: latestBlog || null,
       },
       message: "User statistics successfully retrieved!",
     });
+  },
+  // /:id/saved-blogs => GET
+  handleSavedBlogs: async (req, res) => {
+    /*
+      #swagger.tags = ["Users"]
+      #swagger.summary = "Get Saved Blogs"
+      #swagger.parameters['id'] = {
+        in: 'path',
+        description: 'User ID',
+        required: true,
+        type:'string'
+      }      
+    */
+    const userIdFilter = req.user?.isAdmin
+      ? { _id: req.params.id }
+      : { _id: req.user?._id };
+
+    const user = await User.findOne(userIdFilter);
+
+    const savedBlogIds = user.saved;
+
+    if (savedBlogIds.length === 0) {
+      return res.status(200).json({ error: false, data: [] });
+    }
+
+    const blogs = await Blog.find({ _id: { $in: savedBlogIds } }).populate([
+      "userId",
+      "categoryId",
+    ]);
+
+    res.status(200).json({ error: false, data: blogs });
   },
   // /:id => DELETE
   delete: async (req, res) => {

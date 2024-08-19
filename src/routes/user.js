@@ -13,7 +13,7 @@ const { emailLimiter } = require("../middlewares/rateLimiters");
 
 // URL: /users
 
-const { list, create, feedback, update, read, agreeContract, statistics } =
+const { list, create, feedback, update, read, statistics, handleSavedBlogs } =
   user; // destructure
 
 router
@@ -21,9 +21,16 @@ router
   .get(isStaffOrAdmin, list)
   .post(upload.single("avatar"), isStaffOrAdmin, uploadToS3, create);
 
-router.put("/agree-contract/:userId", agreeContract);
 router.post("/feedback", emailLimiter, feedback);
+
 router.get(
+  "/:id/saved-blogs",
+  isLogin,
+  idValidation,
+  isUserOwnerOrAdmin,
+  handleSavedBlogs
+);
+router.post(
   "/:id/statistics",
   isLogin,
   idValidation,
