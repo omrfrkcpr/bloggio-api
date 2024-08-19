@@ -2,6 +2,8 @@
 
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const { CustomError } = require("../errors/customError");
 const {
   AWS_S3_BUCKET_REGION,
@@ -22,6 +24,30 @@ const s3Client = new S3Client({
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
   },
 });
+
+// Function to upload Google avatar to S3
+const uploadAvatarToS3 = async (avatarUrl, profileId) => {
+  try {
+    const response = await fetch(avatarUrl);
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const fileName = `${Date.now()}-${profileId}.jpg`;
+
+    const params = {
+      Bucket: AWS_S3_BUCKET_NAME,
+      Key: fileName,
+      Body: buffer,
+      ContentType: "image/jpeg",
+    };
+
+    const command = new PutObjectCommand(params);
+    await s3Client.send(command);
+
+    return `https://${AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${fileName}`;
+  } catch (err) {
+    throw new Error("Failed to upload avatar to S3.");
+  }
+};
 
 // Middleware function to upload file to S3
 const uploadToS3 = async (req, res, next) => {
@@ -58,5 +84,6 @@ const uploadToS3 = async (req, res, next) => {
 
 module.exports = {
   upload,
+  uploadAvatarToS3,
   uploadToS3,
 };

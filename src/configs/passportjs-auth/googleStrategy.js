@@ -3,6 +3,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../../models/user");
 const bcrypt = require("bcrypt");
 const { NODE_ENV, VERSION } = require("../../../constants");
+const { uploadAvatarToS3 } = require("../../middlewares/awsS3Upload");
 
 passport.use(
   new GoogleStrategy(
@@ -19,14 +20,17 @@ passport.use(
         let user = await User.findOne({
           $or: [{ email: profile.emails[0].value }, { googleId: profile.id }],
         });
+
         if (!user) {
+          const avatarUrl = await uploadAvatarToS3(profile.photos[0].value);
+
           user = new User({
             googleId: profile.id,
             username: profile.name.givenName.replace(/\s+/g, "").toLowerCase(),
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
             email: profile.emails[0].value,
-            avatar: profile.photos[0].value,
+            avatar: avatarUrl, // Uploaded File in AWS-S3 Bucket
             password: bcrypt.hashSync(
               "A" + profile.name.familyName + profile.id,
               10
@@ -37,9 +41,13 @@ passport.use(
         } else {
           if (!user.avatar) {
             // change avatar url of existing user, it user avatar doesnt exist
+            const avatarUrl = await uploadAvatarToS3(
+              profile.photos[0].value,
+              profile.id
+            );
             await User.updateOne(
               { email: profile.emails[0].value },
-              { avatar: profile.photos[0].value }
+              { avatar: avatarUrl }
             );
           }
           if (!user.googleId) {
