@@ -26,6 +26,42 @@ module.exports = {
       data,
     });
   },
+  // GET /categories/sub-categories
+  listWithSubs: async (req, res) => {
+    /*
+            #swagger.tags = ["Categories"]
+            #swagger.summary = "List Categories With SubCategories"
+        */
+    const categoriesWithSubs = await Category.aggregate([
+      {
+        $lookup: {
+          from: "subCategories",
+          localField: "_id",
+          foreignField: "categoryId",
+          as: "subcategories",
+        },
+      },
+      {
+        $match: {
+          "subcategories.0": { $exists: true },
+        },
+      },
+      {
+        $sort: {
+          name: 1,
+        },
+      },
+      {
+        $addFields: {
+          subcategories: {
+            $sortArray: { input: "$subcategories", sortBy: { name: 1 } },
+          },
+        },
+      },
+    ]);
+
+    res.status(200).send({ error: false, data: categoriesWithSubs });
+  },
 
   // POST /categories
   create: async (req, res) => {

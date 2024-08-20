@@ -10,6 +10,7 @@ router.use("/users", require("./user"));
 router.use("/tokens", require("./token"));
 router.use("/comments", require("./comment"));
 router.use("/categories", require("./category"));
+router.use("/sub-categories", require("./subCategory"));
 
 // document:
 router.use("/documents", require("./document"));

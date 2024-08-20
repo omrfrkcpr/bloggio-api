@@ -13,4 +13,13 @@ const categorySchema = new mongoose.Schema(
   { collection: "categories", timestamps: true }
 );
 
+categorySchema.set("toJSON", {
+  transform: (doc, ret) => {
+    delete ret.__v;
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    return ret;
+  },
+});
+
 module.exports = mongoose.model("Category", categorySchema);
