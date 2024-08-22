@@ -36,7 +36,7 @@ module.exports = {
       details: await res.getModelListDetails(Blog),
       data: data.map((blog) => blog.toJSON()),
       trendings: await Blog.find({ isPublish: true })
-        .sort({ countOfVisitor: -1 })
+        .sort({ countOfVisitors: -1 })
         .limit(10),
     });
   },
@@ -123,20 +123,10 @@ module.exports = {
             }
         */
 
-    let userId = req.user._id;
-
-    if (req.user?.isAdmin) {
-      userId = req.body?.userId;
-    }
-
-    const data = await Blog.updateOne(
-      { _id: req.params.id, userId },
-      req.body,
-      {
-        runValidators: true,
-        new: true,
-      }
-    );
+    const data = await Blog.updateOne({ _id: req.params.id }, req.body, {
+      runValidators: true,
+      new: true,
+    });
 
     res.status(202).send({
       error: false,
