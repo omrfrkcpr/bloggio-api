@@ -2,6 +2,7 @@
 
 const { mongoose } = require("../configs/dbConnection");
 const convertHtmlToText = require("../helpers/convertHtmlToText");
+const Comment = require("../models/comment");
 
 const DEFAULT_IMAGE_URL =
   "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg?w=360";
@@ -97,14 +98,23 @@ const blogSchema = new mongoose.Schema(
 blogSchema.index({ userId: 1 });
 blogSchema.index({ categoryId: 1 });
 
+//? METHODS
+blogSchema.methods.populateCommentsCount = async function () {
+  this._countOfComments = await Comment.countDocuments({ blogId: this._id });
+  return this._countOfComments;
+};
+
 //? VIRTUALS
+
+blogSchema.virtual("countOfComments").get(function () {
+  return this._countOfComments || 0;
+});
 
 blogSchema.virtual("blogDetails").get(function () {
   const countOfLikes = this.likes.length;
 
-  // Calculate countOfComments; if undefined, default to 0
-  const countOfComments =
-    this.countOfComments !== undefined ? this.countOfComments : 0;
+  // Calculate countOfComments
+  const countOfComments = this._countOfComments || 0;
 
   // Calculate readTime
   const averageReadingSpeed = 200; // 200 words per minute

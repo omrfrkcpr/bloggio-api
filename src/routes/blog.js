@@ -15,11 +15,11 @@ router.route("/:id/like").put(isLogin, idValidation, like);
 router.route("/:id/save").put(isLogin, idValidation, save);
 router
   .route("/:id")
-  .all(isLogin, idValidation, isBlogOwnerOrAdmin)
+  .all(isLogin, idValidation)
   // .get(checkVisitSession, read)
   .get(read)
-  .put(update)
-  .patch(update)
-  .delete(blog.delete);
+  .put(isBlogOwnerOrAdmin, update)
+  .patch(isBlogOwnerOrAdmin, update)
+  .delete(isBlogOwnerOrAdmin, blog.delete);
 
 module.exports = router;

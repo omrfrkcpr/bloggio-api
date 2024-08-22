@@ -2,6 +2,7 @@
 
 const Blog = require("../models/blog");
 const User = require("../models/user");
+const Comment = require("../models/comment");
 
 module.exports = {
   // GET
@@ -25,10 +26,15 @@ module.exports = {
       { path: "categoryId", select: "name" },
     ]);
 
+    // Get virtual countOfComments for each blog
+    for (const blog of data) {
+      await blog.populateCommentsCount();
+    }
+
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(Blog),
-      data,
+      data: data.map((blog) => blog.toJSON()),
       trendings: await Blog.find({ isPublish: true })
         .sort({ countOfVisitor: -1 })
         .limit(10),
@@ -88,9 +94,12 @@ module.exports = {
 
     const data = await Blog.findById(blogId).populate(["userId", "categoryId"]);
 
+    // Get virtual countOfComments for single blog
+    await data.populateCommentsCount();
+
     res.status(200).send({
       error: false,
-      data,
+      data: data.toJSON(),
     });
   },
 
