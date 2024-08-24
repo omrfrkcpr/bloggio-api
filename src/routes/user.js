@@ -19,7 +19,7 @@ const { list, create, feedback, update, read, statistics, handleSavedBlogs } =
 router
   .route("/")
   .get(isStaffOrAdmin, list)
-  .post(upload.single("avatar"), isStaffOrAdmin, uploadToS3, create);
+  .post(upload.single("avatar"), isStaffOrAdmin, uploadToS3, create); // as default user will use register end-point not this route
 
 router.post("/feedback", emailLimiter, feedback);
 
