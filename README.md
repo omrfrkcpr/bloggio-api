@@ -164,7 +164,7 @@ To better understand the authentication flow, here is a visual representation:
 
 <!-- Add your visual diagram link or embed it here -->
 
-![Bloggio-Auth-Diagramm](https://bloggio.s3.eu-north-1.amazonaws.com/bloggio-assets/bloggio-auth-process.png)
+![Bloggio-Auth-Diagramm](https://bloggio.s3.eu-north-1.amazonaws.com/bloggio-assets/bloggio-auth.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

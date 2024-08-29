@@ -63,7 +63,7 @@ app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Limit requests from same IP
-// app.use("/", generalRateLimiter);
+app.use("/", generalRateLimiter);
 
 // Logger:
 app.use(require("./src/middlewares/logger"));
