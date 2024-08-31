@@ -57,7 +57,7 @@ module.exports = {
 
     let userId = req.user._id;
 
-    if (req.user?.isAdmin) {
+    if (req.user?.isAdmin && req.body?.userId) {
       userId = req.body?.userId;
     }
 
@@ -196,8 +196,8 @@ module.exports = {
 
     let userId = req.user._id;
 
-    if (req.user.isAdmin) {
-      userId = req.body.userId;
+    if (req.user.isAdmin && req.body?.userId) {
+      userId = req.body?.userId;
     }
 
     const data = await Blog.deleteOne({ _id: req.params.id, userId });
