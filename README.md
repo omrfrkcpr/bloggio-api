@@ -47,10 +47,10 @@
     <br />
     <a href="https://github.com/omrfrkcpr/bloggio-api"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="https://github.com/omrfrkcpr/bloggio"><strong>Bloggio App»</strong></a>
+    <a href="https://github.com/omrfrkcpr/bloggio"><strong>Bloggio App »</strong></a>
     <br />
     <br />
-    <a href="https://bloggio-api.onrender.com/">View API</a>
+    <a href="https://bloggio-api.onrender.com/">View</a>
     ·
     <a href="https://github.com/omrfrkcpr/bloggio-api/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
