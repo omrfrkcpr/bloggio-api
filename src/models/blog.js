@@ -124,7 +124,7 @@ blogSchema.virtual("blogDetails").get(function () {
 
   // Generate content preview
   const contentPrev =
-    words.slice(0, 20).join(" ") + (words.length > 20 ? "..." : "");
+    words.slice(0, 15).join(" ") + (words.length > 20 ? "..." : "");
 
   return {
     countOfLikes,
