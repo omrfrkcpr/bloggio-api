@@ -268,14 +268,14 @@ See the [open issues](https://github.com/omrfrkcpr/bloggio-api/issues) for a ful
 
 CRUD Operations:
 
-- Create: Add new task with detailed information such as name, description, dueDates....
-- Read: Retrieve information about single task, either all at once or individually by ID.
-- Update: Modify the details of existing task.
-- Delete: Remove task from the collection.
+- Create: Add new blog with detailed information such as name, description, dueDates....
+- Read: Retrieve information about single blog, either all at once or individually by ID.
+- Update: Modify the details of existing blog.
+- Delete: Remove blog from the collection.
 
 MVC Architecture:
 
-- Model: Defines the structure of the task data and interacts with the MongoDb database using Mongoose ODM.
+- Model: Defines the structure of the blog data and interacts with the MongoDb database using Mongoose ODM.
 - View: Though typically associated with frontend, in this context, it refers to the response sent back to the client.
 - Controller: Handles incoming requests, processes data using models, and returns the appropriate responses.
 
@@ -287,7 +287,7 @@ Database Management:
 Routing:
 
 - Express.js handles routing, directing API requests to the appropriate controllers.
-- Organized routes for handling task-related operations.
+- Organized routes for handling blog-related operations.
 
 Error Handling:
 
@@ -335,7 +335,7 @@ Controllers:
 Routes:
 
 - Defined in Express to handle API endpoints.
-- Routes map to controller actions for creating, reading, updating, and deleting tasks.
+- Routes map to controller actions for creating, reading, updating, and deleting blogs.
 
 Example endpoints:
 
