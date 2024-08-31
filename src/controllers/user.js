@@ -13,7 +13,7 @@ const {
 const { extractDateNumber } = require("../helpers/extractDateNumber");
 const { CustomError } = require("../errors/customError");
 const { sendFeedbackEmail } = require("../utils/email/emailService");
-const { AWS_S3_BUCKET_REGION } = require("../../constants");
+const { AWS_S3_BUCKET_REGION, AWS_S3_BASE } = require("../../constants");
 const { mongoose } = require("../configs/dbConnection");
 
 module.exports = {
@@ -210,12 +210,14 @@ module.exports = {
 
     // ====================USER-AVATAR===================== //
 
-    const avatarIncludesS3 =
-      user.avatar && user.avatar.includes(AWS_S3_BUCKET_REGION);
+    // console.log("user.avatar", user.avatar); // debugging
+    const avatarIncludesS3 = user.avatar && user.avatar.includes(AWS_S3_BASE);
+    // console.log("avatarIncludesS3", avatarIncludesS3); // debugging
 
     if (req.fileLocation) {
       if (avatarIncludesS3) {
         const identifierForImage = extractDateNumber(user.avatar);
+        // console.log("identifierForImage", identifierForImage); // debugging
         await deleteObjectByDateKeyNumber(identifierForImage); // delete existing user avatar from S3 bucket
       }
       req.body.avatar = req.fileLocation;
@@ -537,14 +539,14 @@ module.exports = {
       ? { userId: req.params.id }
       : { userId: req.user?._id };
 
-    // Delete all tasks and tags related to
+    // Delete all blogs and comments related to this user
     await Blog.deleteMany(userIdFilter);
     await Comment.deleteMany(userIdFilter);
 
     // Delete user
     const result = await User.findOneAndDelete(idFilter); // returns data
 
-    if (result.avatar && result.avatar.includes(AWS_S3_BUCKET_REGION)) {
+    if (result.avatar && result.avatar.includes(AWS_S3_BASE)) {
       const identifierForImage = extractDateNumber(result.avatar);
       await deleteObjectByDateKeyNumber(identifierForImage); // delete existing user avatar from s3 bucket
     }
