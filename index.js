@@ -7,6 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
+const job = require("./src/helpers/cron");
 const { generalRateLimiter } = require("./src/middlewares/rateLimiters");
 const {
   CLIENT_URL,
@@ -16,6 +17,10 @@ const {
   SECRET_KEY,
   MONGODB_URI,
 } = require("./constants");
+
+// Cron job
+console.log("Cron job is being started...");
+job.start();
 
 //Connect Database
 const { connectDB } = require("./src/configs/dbConnection");

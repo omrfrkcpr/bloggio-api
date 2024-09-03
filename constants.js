@@ -5,6 +5,7 @@ require("dotenv").config();
 module.exports = {
   PORT: process.env?.PORT || 8000,
   HOST: process.env?.HOST || "127.0.0.1",
+  BACKEND_URL: process.env?.BACKEND_URL,
   CLIENT_URL: process.env?.CLIENT_URL,
   MONGODB_URI: process.env?.MONGODB_URI,
   SECRET_KEY: process.env?.SECRET_KEY,
