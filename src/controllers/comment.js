@@ -21,13 +21,15 @@ module.exports = {
 
     let listFilter = {};
 
-    if (!req.user.isAdmin) {
-      listFilter.userId = req.user._id;
-    }
+    // if (!req.user.isAdmin) {
+    //   listFilter.userId = req.user._id;
+    // }
 
     const data = await res.getModelList(Comment, listFilter, [
-      "userId",
-      "blogId",
+      {
+        path: "userId",
+        select: "_id username createdAt firstName lastName avatar updatedAt",
+      },
     ]);
 
     res.status(200).send({
@@ -110,7 +112,9 @@ module.exports = {
 
     const blogId = req.params.id;
 
-    const data = await Comment.find({ blogId }).populate("userId");
+    const data = await Comment.find({ blogId }).populate([
+      { path: "userId", select: "_id username createdAt updatedAt" },
+    ]);
 
     res.status(200).send({
       error: false,
